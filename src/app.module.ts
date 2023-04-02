@@ -9,6 +9,7 @@ import { TelegramBotModule } from './telegram-bot/telegram-bot.module';
 import { MyBotName } from './app.constants';
 import { BlogModule } from './blog/blog.module';
 import { PortfolioModule } from './portfolio/portfolio.module';
+import { UserMsgModule } from './user_msg/user_msg.module';
 
 @Module({
   imports: [
@@ -51,6 +52,7 @@ import { PortfolioModule } from './portfolio/portfolio.module';
     TelegramBotModule,
     BlogModule,
     PortfolioModule,
+    UserMsgModule,
   ],
 })
 export class AppModule {}
