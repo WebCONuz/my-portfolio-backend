@@ -8,6 +8,7 @@ import { TelegrafModule } from 'nestjs-telegraf';
 import { TelegramBotModule } from './telegram-bot/telegram-bot.module';
 import { MyBotName } from './app.constants';
 import { BlogModule } from './blog/blog.module';
+import { PortfolioModule } from './portfolio/portfolio.module';
 
 @Module({
   imports: [
@@ -49,6 +50,7 @@ import { BlogModule } from './blog/blog.module';
     ServicesModule,
     TelegramBotModule,
     BlogModule,
+    PortfolioModule,
   ],
 })
 export class AppModule {}
