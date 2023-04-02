@@ -15,7 +15,7 @@ export class CreateServicesDto {
   @IsNotEmpty()
   readonly description: string;
 
-  @ApiProperty({ example: 'uz', description: 'Service language' })
+  @ApiProperty({ example: 'en', description: 'Service language' })
   @IsString()
   @IsNotEmpty()
   readonly lang: string;

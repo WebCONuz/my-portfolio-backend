@@ -7,6 +7,7 @@ import { resolve } from 'path';
 import { TelegrafModule } from 'nestjs-telegraf';
 import { TelegramBotModule } from './telegram-bot/telegram-bot.module';
 import { MyBotName } from './app.constants';
+import { BlogModule } from './blog/blog.module';
 
 @Module({
   imports: [
@@ -47,6 +48,7 @@ import { MyBotName } from './app.constants';
     // Custom modules
     ServicesModule,
     TelegramBotModule,
+    BlogModule,
   ],
 })
 export class AppModule {}
