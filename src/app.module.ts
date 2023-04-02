@@ -10,6 +10,7 @@ import { MyBotName } from './app.constants';
 import { BlogModule } from './blog/blog.module';
 import { PortfolioModule } from './portfolio/portfolio.module';
 import { UserMsgModule } from './user_msg/user_msg.module';
+import { EducationModule } from './education/education.module';
 
 @Module({
   imports: [
@@ -53,6 +54,7 @@ import { UserMsgModule } from './user_msg/user_msg.module';
     BlogModule,
     PortfolioModule,
     UserMsgModule,
+    EducationModule,
   ],
 })
 export class AppModule {}
