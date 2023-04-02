@@ -12,6 +12,7 @@ import { PortfolioModule } from './portfolio/portfolio.module';
 import { UserMsgModule } from './user_msg/user_msg.module';
 import { EducationModule } from './education/education.module';
 import { WorkModule } from './work/work.module';
+import { AdminModule } from './admin/admin.module';
 
 @Module({
   imports: [
@@ -57,6 +58,7 @@ import { WorkModule } from './work/work.module';
     UserMsgModule,
     EducationModule,
     WorkModule,
+    AdminModule,
   ],
 })
 export class AppModule {}
