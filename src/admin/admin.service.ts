@@ -7,15 +7,74 @@ import { InjectModel } from '@nestjs/sequelize';
 import { Admin } from './entity/admin.entity';
 import { CreateAdminDto } from './dto/create-admin.dto';
 import { UpdateAdminDto } from './dto/update-admin.dto';
+import * as bcrypt from 'bcryptjs';
+import { Response } from 'express';
+import { Token } from 'src/common/types';
+import { JwtService } from '@nestjs/jwt';
+import { LoginAdminDto } from './dto/login-admin.dto';
 
 @Injectable()
 export class AdminService {
-  constructor(@InjectModel(Admin) private adminRepository: typeof Admin) {}
+  constructor(
+    @InjectModel(Admin) private adminRepository: typeof Admin,
+    private jwtService: JwtService,
+  ) {}
 
-  // Create Admin Admin
-  async create(createBody: CreateAdminDto) {
+  // Signup Admin Service
+  async signup(authBody: CreateAdminDto) {
     try {
-      return await this.adminRepository.create(createBody);
+      const condidate = await this.adminRepository.findOne({
+        where: { email: authBody.email },
+      });
+      if (condidate) {
+        throw new BadRequestException('Bunday admin bazada mavjud');
+      }
+
+      const hashedPassword = await bcrypt.hash(authBody.password, 7);
+      const newAdmin = await this.adminRepository.create({
+        ...authBody,
+        password: hashedPassword,
+      });
+
+      return newAdmin;
+    } catch (error) {
+      throw new InternalServerErrorException(error.message);
+    }
+  }
+
+  // Signin Admin Service
+  async signin(authBody: LoginAdminDto, res: Response): Promise<Token> {
+    try {
+      const admin = await this.adminRepository.findOne({
+        where: { email: authBody.email },
+      });
+      if (!admin) {
+        throw new BadRequestException('Login1 yoki parol xato!');
+      }
+
+      // Compare two Passwords
+      const passwordMatches = await bcrypt.compare(
+        authBody.password,
+        admin.password,
+      );
+      if (!passwordMatches) {
+        throw new BadRequestException('Login yoki parol1 xato!');
+      }
+
+      // Generate Access & Refresh Tokens
+      const tokenObj = await this.getToken(
+        admin.id,
+        admin.email,
+        admin.is_creator,
+      );
+
+      // Write Refresh Token to Cookie
+      res.cookie('access_token', tokenObj.access_token, {
+        maxAge: 30 * 60 * 1000,
+        httpOnly: true,
+      });
+
+      return tokenObj;
     } catch (error) {
       throw new InternalServerErrorException(error.message);
     }
@@ -73,5 +132,31 @@ export class AdminService {
     } catch (error) {
       throw new InternalServerErrorException(error.message);
     }
+  }
+
+  // Access Token Generator
+  async getToken(
+    id: number,
+    email: string,
+    is_creator: boolean,
+  ): Promise<Token> {
+    // Create Payload
+    const jwtPayload = {
+      sub: id,
+      email,
+      is_creator,
+      is_admin: true,
+    };
+
+    // Create Access & Refresh Token
+    const accessToken = await this.jwtService.signAsync(jwtPayload, {
+      secret: process.env.ACCESS_TOKEN_KEY,
+      expiresIn: process.env.ACCESS_TOKEN_TIME,
+    });
+
+    return {
+      access_token: accessToken,
+      expired_time: process.env.ACCESS_TOKEN_TIME,
+    };
   }
 }

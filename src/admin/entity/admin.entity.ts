@@ -4,7 +4,7 @@ import { Column, DataType, Model, Table } from 'sequelize-typescript';
 interface AdminCreationAttr {
   full_name: string;
   email: string;
-  passsword: string;
+  password: string;
   lang: string;
 }
 
@@ -47,7 +47,7 @@ export class Admin extends Model<Admin, AdminCreationAttr> {
     type: DataType.STRING,
     allowNull: false,
   })
-  passsword: string;
+  password: string;
 
   @ApiProperty({
     example: 'false',
